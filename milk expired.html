@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milk Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #openMilkButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Milk Expiry Tracker</h1>
+        <button id="openMilkButton">Open Milk</button>
+        <div id="status"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const openMilkButton = document.getElementById('openMilkButton');
+            const statusDiv = document.getElementById('status');
+            const localStorageKey = 'milkOpenedDate';
+
+            function checkMilkStatus() {
+                const openedDate = localStorage.getItem(localStorageKey);
+                if (openedDate) {
+                    const openedDateObj = new Date(openedDate);
+                    const expiryDate = new Date(openedDateObj.getTime() + 2 * 24 * 60 * 60 * 1000);
+                    const now = new Date();
+
+                    if (now > expiryDate) {
+                        statusDiv.innerHTML = `The milk has expired. It was opened on ${openedDateObj.toDateString()}.`;
+                    } else {
+                        statusDiv.innerHTML = `The milk is still good. It will expire on ${expiryDate.toDateString()}.`;
+                    }
+                } else {
+                    statusDiv.innerHTML = 'No milk has been opened yet.';
+                }
+            }
+
+            openMilkButton.addEventListener('click', () => {
+                const now = new Date();
+                localStorage.setItem(localStorageKey, now.toISOString());
+                checkMilkStatus();
+            });
+
+            checkMilkStatus();
+        });
+    </script>
+</body>
+</html>
